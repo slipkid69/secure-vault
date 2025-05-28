@@ -1,281 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Secure Vault Login</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Secure Vault Login</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
-    body {
-      margin: 0;
-      font-family: 'Share Tech Mono', monospace;
-      background: url('background.jpg') no-repeat center center fixed;
-      background-size: cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      color: #00FFFF;
-      text-shadow:
-        0 0 5px #00ffff,
-        0 0 10px #00ffff,
-        0 0 20px #00ffff,
-        0 0 40px #00ffff;
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Orbitron', monospace;
+    background: url('background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    overflow: hidden;
+    color: #00ffff;
+  }
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  /* Vault container with neon glow */
+  #vault-container {
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid #00ffff;
+    border-radius: 12px;
+    padding: 30px 40px;
+    box-shadow:
+      0 0 10px #00ffff,
+      0 0 20px #00ffff,
+      0 0 30px #00ffff,
+      0 0 40px #00ffff inset;
+    text-align: center;
+    width: 320px;
+    animation: pulseGlow 3s infinite alternate ease-in-out;
+  }
+  @keyframes pulseGlow {
+    from { box-shadow: 0 0 5px #00ffff, 0 0 15px #00ffff inset; }
+    to { box-shadow: 0 0 20px #00ffff, 0 0 50px #00ffff inset; }
+  }
+  h2 {
+    font-weight: 700;
+    margin-bottom: 25px;
+    text-shadow:
+      0 0 5px #00ffff,
+      0 0 10px #00ffff;
+  }
+  input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: transparent;
+    border: 1.5px solid #00ffff;
+    border-radius: 6px;
+    color: #00ffff;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  input[type="email"]:focus, input[type="password"]:focus {
+    border-color: #00ffff;
+    box-shadow: 0 0 8px #00ffff;
+  }
+  button {
+    background-color: #00ffff;
+    border: none;
+    color: #000;
+    padding: 10px 25px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 700;
+    box-shadow: 0 0 10px #00ffff;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #33ffff;
+  }
+  textarea {
+    width: 100%;
+    height: 150px;
+    background: transparent;
+    border: 1.5px solid #00ffff;
+    border-radius: 6px;
+    color: #00ffff;
+    padding: 12px;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.9rem;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  textarea:focus {
+    border-color: #00ffff;
+    box-shadow: 0 0 8px #00ffff;
+  }
+  #message {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: #00ffff;
+    text-shadow: 0 0 4px #00ffff;
+  }
+  footer {
+    margin-top: 25px;
+    color: #00ffff;
+    font-size: 0.75rem;
+    text-shadow: 0 0 5px #00ffff;
+  }
+  /* Background glyph animation */
+  .glyphs {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .glyph {
+    position: absolute;
+    font-family: 'Orbitron', monospace;
+    color: #00ffff55;
+    font-size: 1.4rem;
+    user-select: none;
+    animation: floatGlyphs linear infinite;
+    text-shadow:
+      0 0 5px #00ffff99,
+      0 0 10px #00ffffaa;
+  }
+  @keyframes floatGlyphs {
+    0% {
+      transform: translateY(100vh) rotate(0deg);
+      opacity: 0;
     }
-
-    #vault-container {
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid #00FFFF;
-      border-radius: 10px;
-      padding: 25px;
-      box-shadow:
-        0 0 10px #00ffff,
-        0 0 20px #00ffff,
-        0 0 30px #00ffff,
-        0 0 40px #00ffff;
-      width: 300px;
-      max-width: 90vw;
-      animation: fadeIn 1.5s ease forwards;
+    20% {
+      opacity: 1;
     }
-
-    h2 {
-      font-size: 1.4rem;
-      text-align: center;
-      margin-bottom: 1.2rem;
-      color: #00FFFF;
-      text-shadow:
-        0 0 5px #00ffff,
-        0 0 10px #00ffff,
-        0 0 20px #00ffff;
-      animation: glow 2s infinite alternate;
+    100% {
+      transform: translateY(-10vh) rotate(360deg);
+      opacity: 0;
     }
-
-    input[type="email"],
-    input[type="password"],
-    textarea {
-      width: 100%;
-      padding: 8px;
-      margin: 0.6rem 0 1.2rem 0;
-      border: 1px solid #00FFFF;
-      border-radius: 4px;
-      background-color: #000;
-      color: #00FFFF;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 1rem;
-      text-shadow: none;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-      max-height: 150px;
-    }
-
-    button {
-      background-color: #00FFFF;
-      border: none;
-      border-radius: 5px;
-      color: black;
-      padding: 10px 15px;
-      margin-right: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      font-family: 'Share Tech Mono', monospace;
-      box-shadow:
-        0 0 5px #00ffff,
-        0 0 10px #00ffff;
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #00cccc;
-      box-shadow:
-        0 0 10px #00ccff,
-        0 0 15px #00ccff;
-    }
-
-    #message {
-      text-align: center;
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: #00FFFF;
-      text-shadow:
-        0 0 5px #00ffff,
-        0 0 10px #00ffff;
-      min-height: 1.4rem;
-    }
-
-    footer {
-      margin-top: 15px;
-      text-align: center;
-      font-size: 0.8rem;
-      color: #00FFFF;
-      text-shadow:
-        0 0 5px #00ffff,
-        0 0 10px #00ffff;
-      animation: glow 2s infinite alternate;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px);}
-      to { opacity: 1; transform: translateY(0);}
-    }
-
-    @keyframes glow {
-      from {
-        text-shadow:
-          0 0 5px #00ffff,
-          0 0 10px #00ffff,
-          0 0 20px #00ffff;
-      }
-      to {
-        text-shadow:
-          0 0 10px #00ffff,
-          0 0 20px #00ffff,
-          0 0 30px #00ffff,
-          0 0 40px #00ffff;
-      }
-    }
-
-    /* Responsive */
-    @media (max-width: 400px) {
-      #vault-container {
-        width: 90vw;
-        padding: 15px;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
-
 <body>
-  <div id="vault-container">
+<div class="glyphs" aria-hidden="true"></div>
 
-    <h2>Secure Vault Login</h2>
+<div id="vault-container">
+  <h2>Secure Vault Login</h2>
 
-    <form id="login-form">
-      <input type="email" id="email" placeholder="Email" required /><br />
-      <input type="password" id="password" placeholder="Password" required /><br />
-      <button type="submit">Login</button>
-    </form>
+  <form id="login-form" autocomplete="username">
+    <input type="email" id="email" placeholder="Email" required autocomplete="email" />
+    <input type="password" id="password" placeholder="Password" required autocomplete="current-password" />
+    <button type="submit">Login</button>
+  </form>
 
-    <form id="vault-form" style="display:none;">
-      <textarea id="vault-content" placeholder="Enter your vault content here..."></textarea><br />
-      <button id="save-vault">Save Vault</button>
-      <button id="logout-btn" style="display:none;">Logout</button>
-    </form>
+  <form id="vault-form" style="display:none;">
+    <textarea id="vault-content" placeholder="Enter your vault content here..."></textarea>
+    <button id="save-vault">Save Vault</button>
+    <button id="logout-btn" style="display:none;">Logout</button>
+  </form>
 
-    <p id="message"></p>
+  <p id="message"></p>
+</div>
 
-    <footer>
-      James Armstrong &amp; Logos
-    </footer>
+<footer>
+  James Armstrong & Logos
+</footer>
 
-  </div>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-  <!-- Firebase scripts -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyA0TQaXb8dSIs06Wi39GNs059oxRh-d5Ks",
+    authDomain: "jamesvault-ae694.firebaseapp.com",
+    projectId: "jamesvault-ae694",
+    storageBucket: "jamesvault-ae694.appspot.com",
+    messagingSenderId: "828495768440",
+    appId: "1:828495768440:web:6c7b4d40db7c03e069368d"
+  };
 
-  <script>
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyA0TQaXb8dSIs06Wi39GNs059oxRh-d5Ks",
-      authDomain: "jamesvault-ae694.firebaseapp.com",
-      projectId: "jamesvault-ae694",
-      storageBucket: "jamesvault-ae694.appspot.com",
-      messagingSenderId: "828495768440",
-      appId: "1:828495768440:web:6c7b4d40db7c03e069368d"
-    };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+  const loginForm = document.getElementById('login-form');
+  const vaultForm = document.getElementById('vault-form');
+  const messageEl = document.getElementById('message');
+  const vaultContent = document.getElementById('vault-content');
+  const saveVaultBtn = document.getElementById('save-vault');
+  const logoutBtn = document.getElementById('logout-btn');
+  const glyphContainer = document.querySelector('.glyphs');
 
-    const loginForm = document.getElementById('login-form');
-    const vaultForm = document.getElementById('vault-form');
-    const messageEl = document.getElementById('message');
-    const vaultContent = document.getElementById('vault-content');
-    const saveVaultBtn = document.getElementById('save-vault');
-    const logoutBtn = document.getElementById('logout-btn');
-
-    // Auth state change monitor
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        messageEl.textContent = "Login successful! You can now access your vault.";
-        loginForm.style.display = 'none';
-        vaultForm.style.display = 'block';
-        logoutBtn.style.display = 'inline-block';
-        loadVaultContent(user.email);
-      } else {
-        messageEl.textContent = "";
-        loginForm.style.display = 'block';
-        vaultForm.style.display = 'none';
-        logoutBtn.style.display = 'none';
-        vaultContent.value = '';
-      }
-    });
-
-    // Login handler
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      auth.signInWithEmailAndPassword(email, password)
-        .catch((error) => {
-          messageEl.textContent = "Login failed: " + error.message;
-        });
-    });
-
-    // Load vault content
-    function loadVaultContent(email) {
-      db.collection('vaults').doc(email).get()
-        .then((doc) => {
-          if (doc.exists) {
-            vaultContent.value = doc.data().content || '';
-          } else {
-            vaultContent.value = '';
-          }
-        })
-        .catch((error) => {
-          messageEl.textContent = "Error loading vault: " + error.message;
-        });
+  // Monitor auth state
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      messageEl.textContent = "Login successful! You can now access your vault.";
+      loginForm.style.display = 'none';
+      vaultForm.style.display = 'block';
+      logoutBtn.style.display = 'inline-block';
+      loadVaultContent(user.email);
+    } else {
+      messageEl.textContent = "";
+      loginForm.style.display = 'block';
+      vaultForm.style.display = 'none';
+      logoutBtn.style.display = 'none';
+      vaultContent.value = '';
     }
+  });
 
-    // Save vault content
-    saveVaultBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const user = auth.currentUser;
-      if (!user) {
-        messageEl.textContent = "You must be logged in to save vault content.";
-        return;
-      }
-      const content = vaultContent.value;
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    auth.signInWithEmailAndPassword(email, password)
+      .catch(error => {
+        messageEl.textContent = "Login failed: " + error.message;
+      });
+  });
 
-      db.collection('vaults').doc(user.email).set({ content })
-        .then(() => {
-          messageEl.textContent = "Vault saved securely.";
-        })
-        .catch((error) => {
-          messageEl.textContent = "Error saving vault: " + error.message;
-        });
-    });
+  function loadVaultContent(email) {
+    db.collection('vaults').doc(email).get()
+      .then(doc => {
+        if (doc.exists) {
+          vaultContent.value = doc.data().content || '';
+        } else {
+          vaultContent.value = '';
+        }
+      })
+      .catch(error => {
+        messageEl.textContent = "Error loading vault: " + error.message;
+      });
+  }
 
-    // Logout handler
-    logoutBtn.addEventListener('click', () => {
-      auth.signOut()
-        .then(() => {
-          messageEl.textContent = "Logged out successfully.";
-        })
-        .catch((error) => {
-          messageEl.textContent = "Error logging out: " + error.message;
-        });
-    });
-  </script>
+  saveVaultBtn.addEventListener('click', e => {
+    e.preventDefault();
+    const user = auth.currentUser;
+    if (!user) {
+      messageEl.textContent = "You must be logged in to save vault content.";
+      return;
+    }
+    const content = vaultContent.value;
+    db.collection('vaults').doc(user.email).set({ content })
+      .then(() => {
+        messageEl.textContent = "Vault saved securely.";
+      })
+      .catch(error => {
+        messageEl.textContent = "Error saving vault: " + error.message;
+      });
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    auth.signOut()
+      .then(() => {
+        messageEl.textContent = "Logged out successfully.";
+      })
+      .catch(error => {
+        messageEl.textContent = "Error logging out: " + error.message;
+      });
+  });
+
+  // Glyph floating animation logic
+  const glyphChars = ['◢', '◣', '◥', '◤', '◯', '◇', '◆', '◈', '△', '▲', '▴', '▵', '▶', '►', '▷'];
+  const maxGlyphs = 20;
+
+  function createGlyph() {
+    const glyph = document.createElement('div');
+    glyph.className = 'glyph';
+    glyph.textContent = glyphChars[Math.floor(Math.random() * glyphChars.length)];
+    glyph.style.left = Math.random() * 100 + 'vw';
+    glyph.style.animationDuration = 15 + Math.random() * 15 + 's';
+    glyph.style.fontSize = 12 + Math.random() * 24 + 'px';
+    glyphContainer.appendChild(glyph);
+
+    setTimeout(() => {
+      glyph.remove();
+    }, parseFloat(glyph.style.animationDuration) * 1000);
+  }
+
+  setInterval(() => {
+    if (glyphContainer.children.length < maxGlyphs) {
+      createGlyph();
+    }
+  }, 1000);
+</script>
 </body>
 </html>
-
