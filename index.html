@@ -4,86 +4,137 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Secure Vault Login</title>
-
-  <!-- Google Fonts: Orbitron -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
-
   <style>
-    body {
+    /* Reset some basics */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
       font-family: 'Orbitron', sans-serif;
-      background-color: #0a0a0a; /* Almost black for cyberpunk vibe */
-      color: #00f0ff; /* Neon cyan text */
-      margin: 2rem;
+      background: #0e0e0e; /* Dark background */
+      color: #00f0ff; /* Cyberpunk blue-ish text */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      animation: bgPulse 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgPulse {
+      0% { background-color: #0e0e0e; }
+      100% { background-color: #141414; }
+    }
+
+    #vault-form, #login-form {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 30px 40px;
+      box-shadow: 0 0 20px #00f0ff88;
+      width: 320px;
+      box-sizing: border-box;
+      animation: fadeIn 1s ease forwards;
     }
 
     h2 {
       text-align: center;
-      font-weight: 700;
-      text-shadow:
-        0 0 5px #00f0ff,
-        0 0 10px #00f0ff,
-        0 0 20px #00f0ff;
+      margin-bottom: 20px;
+      font-size: 1.7rem;
+      text-shadow: 0 0 8px #00f0ff;
+      letter-spacing: 1.5px;
     }
 
+    input[type="email"],
+    input[type="password"],
     textarea {
-      background-color: #111;
-      border: 2px solid #00f0ff;
-      color: #00f0ff;
-      font-family: 'Orbitron', monospace;
-      font-size: 1rem;
-      padding: 10px;
-      border-radius: 6px;
       width: 100%;
-      max-width: 500px;
-      display: block;
-      margin: 0 auto 1rem auto;
+      padding: 12px 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: 'Orbitron', monospace;
+      background: #222;
+      color: #00f0ff;
+      box-shadow: inset 0 0 8px #00f0ff55;
+      transition: box-shadow 0.3s ease;
+      resize: vertical;
+    }
+
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    textarea:focus {
+      outline: none;
+      box-shadow: 0 0 10px #00f0ffcc;
+      background: #111;
     }
 
     button {
       background-color: #00f0ff;
-      color: #0a0a0a;
       border: none;
-      padding: 8px 16px;
-      margin: 0 5px;
-      border-radius: 5px;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 1rem;
       font-weight: 700;
+      color: #0e0e0e;
       cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 0 0 10px #00f0ffcc;
       transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      margin-right: 8px;
+      min-width: 100px;
     }
 
     button:hover {
-      background-color: #00c5cc;
-      box-shadow: 0 0 8px #00c5cc;
+      background-color: #00c7d7;
+      box-shadow: 0 0 16px #00f0ff;
     }
 
     #message {
-      max-width: 500px;
-      margin: 1rem auto;
+      margin-top: 20px;
       text-align: center;
-      font-weight: 500;
+      font-size: 1rem;
+      min-height: 1.5em;
+      animation: fadeIn 1s ease forwards;
     }
 
-    form {
-      text-align: center;
+    /* Fade in animation */
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    /* Responsive */
+    @media (max-width: 400px) {
+      #vault-form, #login-form {
+        width: 90vw;
+        padding: 20px;
+      }
+
+      button {
+        width: 100%;
+        margin: 8px 0 0 0;
+      }
     }
   </style>
+  <!-- Google Fonts for Cyberpunk-ish vibe -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <h2>Secure Vault Login</h2>
-  
   <form id="login-form">
-    <input type="email" id="email" placeholder="Email" required /><br /><br />
-    <input type="password" id="password" placeholder="Password" required /><br /><br />
+    <h2>Secure Vault Login</h2>
+    <input type="email" id="email" placeholder="Email" required autocomplete="username" />
+    <input type="password" id="password" placeholder="Password" required autocomplete="current-password" />
     <button type="submit">Login</button>
+    <p id="message"></p>
   </form>
 
   <form id="vault-form" style="display:none;">
-    <textarea id="vault-content" rows="10" cols="50" placeholder="Enter your vault content here..."></textarea><br /><br />
+    <h2>Secure Vault Login</h2>
+    <textarea id="vault-content" rows="10" cols="50" placeholder="Enter your vault content here..."></textarea><br />
     <button id="save-vault">Save Vault</button>
-    <button id="logout-btn" style="display:none;">Logout</button>
+    <button id="logout-btn" type="button" style="display:none;">Logout</button>
+    <p id="message"></p>
   </form>
-
-  <p id="message"></p>
 
   <!-- Firebase App (the core Firebase SDK) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -93,7 +144,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // Your Firebase config object
     const firebaseConfig = {
       apiKey: "AIzaSyA0TQaXb8dSIs06Wi39GNs059oxRh-d5Ks",
       authDomain: "jamesvault-ae694.firebaseapp.com",
@@ -103,28 +153,30 @@
       appId: "1:828495768440:web:6c7b4d40db7c03e069368d"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
     const loginForm = document.getElementById('login-form');
     const vaultForm = document.getElementById('vault-form');
-    const messageEl = document.getElementById('message');
+    const messageEls = document.querySelectorAll('#message');
     const vaultContent = document.getElementById('vault-content');
     const saveVaultBtn = document.getElementById('save-vault');
     const logoutBtn = document.getElementById('logout-btn');
 
-    // Monitor auth state changes
+    function showMessage(text) {
+      messageEls.forEach(el => el.textContent = text);
+    }
+
     auth.onAuthStateChanged(user => {
       if (user) {
-        messageEl.textContent = "Login successful! You can now access your vault.";
+        showMessage("Login successful! You can now access your vault.");
         loginForm.style.display = 'none';
         vaultForm.style.display = 'block';
         logoutBtn.style.display = 'inline-block';
         loadVaultContent(user.email);
       } else {
-        messageEl.textContent = "";
+        showMessage("");
         loginForm.style.display = 'block';
         vaultForm.style.display = 'none';
         logoutBtn.style.display = 'none';
@@ -132,62 +184,43 @@
       }
     });
 
-    // Login handler
-    loginForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', e => {
       e.preventDefault();
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
       auth.signInWithEmailAndPassword(email, password)
-        .catch((error) => {
-          messageEl.textContent = "Login failed: " + error.message;
-        });
+        .catch(error => showMessage("Login failed: " + error.message));
     });
 
-    // Load vault content from Firestore
     function loadVaultContent(email) {
       db.collection('vaults').doc(email).get()
-        .then((doc) => {
-          if (doc.exists) {
-            vaultContent.value = doc.data().content || '';
-          } else {
-            vaultContent.value = '';
-          }
+        .then(doc => {
+          vaultContent.value = doc.exists ? doc.data().content || '' : '';
         })
-        .catch((error) => {
-          messageEl.textContent = "Error loading vault: " + error.message;
-        });
+        .catch(error => showMessage("Error loading vault: " + error.message));
     }
 
-    // Save vault content handler
-    saveVaultBtn.addEventListener('click', (e) => {
+    saveVaultBtn.addEventListener('click', e => {
       e.preventDefault();
       const user = auth.currentUser;
       if (!user) {
-        messageEl.textContent = "You must be logged in to save vault content.";
+        showMessage("You must be logged in to save vault content.");
         return;
       }
       const content = vaultContent.value;
 
       db.collection('vaults').doc(user.email).set({ content })
-        .then(() => {
-          messageEl.textContent = "Vault saved securely.";
-        })
-        .catch((error) => {
-          messageEl.textContent = "Error saving vault: " + error.message;
-        });
+        .then(() => showMessage("Vault saved securely."))
+        .catch(error => showMessage("Error saving vault: " + error.message));
     });
 
-    // Logout handler
     logoutBtn.addEventListener('click', () => {
       auth.signOut()
-        .then(() => {
-          messageEl.textContent = "Logged out successfully.";
-        })
-        .catch((error) => {
-          messageEl.textContent = "Error logging out: " + error.message;
-        });
+        .then(() => showMessage("Logged out successfully."))
+        .catch(error => showMessage("Error logging out: " + error.message));
     });
   </script>
 </body>
 </html>
+
