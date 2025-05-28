@@ -4,32 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Secure Vault Login</title>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
-    /* Reset & Base */
-    * {
-      box-sizing: border-box;
-    }
     body {
       margin: 0;
-      padding: 0;
       font-family: 'Share Tech Mono', monospace;
       background: url('background.jpg') no-repeat center center fixed;
       background-size: cover;
-      color: #00FFFF;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
-    }
-    /* Neon Text Glow */
-    h2 {
-      color: #00ffff;
-      font-size: 1.8rem;
-      text-align: center;
-      margin-bottom: 1rem;
+      color: #00FFFF;
       text-shadow:
         0 0 5px #00ffff,
         0 0 10px #00ffff,
@@ -37,134 +25,154 @@
         0 0 40px #00ffff;
     }
 
-    /* Container */
-    .vault-container {
-      background: rgba(0, 0, 0, 0.75);
-      padding: 2rem;
+    #vault-container {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #00FFFF;
       border-radius: 10px;
+      padding: 25px;
       box-shadow:
         0 0 10px #00ffff,
-        0 0 40px #00ffff,
-        0 0 80px #00ffff;
-      width: 320px;
+        0 0 20px #00ffff,
+        0 0 30px #00ffff,
+        0 0 40px #00ffff;
+      width: 300px;
       max-width: 90vw;
-      animation: fadeInGlow 1.5s ease forwards;
+      animation: fadeIn 1.5s ease forwards;
     }
 
-    /* Fade in glow animation */
-    @keyframes fadeInGlow {
-      0% {
-        opacity: 0;
-        box-shadow: none;
-      }
-      100% {
-        opacity: 1;
-        box-shadow:
-          0 0 10px #00ffff,
-          0 0 40px #00ffff,
-          0 0 80px #00ffff;
-      }
+    h2 {
+      font-size: 1.4rem;
+      text-align: center;
+      margin-bottom: 1.2rem;
+      color: #00FFFF;
+      text-shadow:
+        0 0 5px #00ffff,
+        0 0 10px #00ffff,
+        0 0 20px #00ffff;
+      animation: glow 2s infinite alternate;
     }
 
-    /* Inputs */
-    input[type="email"], input[type="password"], textarea {
+    input[type="email"],
+    input[type="password"],
+    textarea {
       width: 100%;
-      background: transparent;
-      border: 1px solid #00ffff;
-      border-radius: 4px;
       padding: 8px;
-      margin-bottom: 12px;
+      margin: 0.6rem 0 1.2rem 0;
+      border: 1px solid #00FFFF;
+      border-radius: 4px;
+      background-color: #000;
+      color: #00FFFF;
       font-family: 'Share Tech Mono', monospace;
       font-size: 1rem;
-      color: #00ffff;
-      box-shadow:
-        0 0 5px #00ffff,
-        inset 0 0 10px #00ffff;
-      transition: box-shadow 0.3s ease;
-    }
-    input[type="email"]:focus, input[type="password"]:focus, textarea:focus {
-      outline: none;
-      box-shadow:
-        0 0 10px #00ffff,
-        inset 0 0 20px #00ffff;
+      text-shadow: none;
     }
 
-    /* Buttons */
-    button {
-      background-color: #00ffff;
-      color: #000;
-      border: none;
-      padding: 10px 20px;
-      font-family: 'Share Tech Mono', monospace;
-      font-weight: bold;
-      border-radius: 5px;
-      cursor: pointer;
-      box-shadow:
-        0 0 8px #00ffff,
-        0 0 20px #00ffff;
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
-      margin-right: 10px;
-      text-transform: uppercase;
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      max-height: 150px;
     }
+
+    button {
+      background-color: #00FFFF;
+      border: none;
+      border-radius: 5px;
+      color: black;
+      padding: 10px 15px;
+      margin-right: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-family: 'Share Tech Mono', monospace;
+      box-shadow:
+        0 0 5px #00ffff,
+        0 0 10px #00ffff;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
     button:hover {
       background-color: #00cccc;
       box-shadow:
-        0 0 12px #00cccc,
-        0 0 30px #00cccc;
+        0 0 10px #00ccff,
+        0 0 15px #00ccff;
     }
 
-    /* Message */
     #message {
-      margin-top: 1rem;
       text-align: center;
+      margin-top: 1rem;
       font-size: 0.9rem;
-      color: #00ffff;
-      text-shadow: 0 0 5px #00ffff;
-      min-height: 1.2rem;
+      color: #00FFFF;
+      text-shadow:
+        0 0 5px #00ffff,
+        0 0 10px #00ffff;
+      min-height: 1.4rem;
     }
 
-    /* Footer */
     footer {
-      position: fixed;
-      bottom: 10px;
-      width: 100%;
+      margin-top: 15px;
       text-align: center;
-      font-family: 'Share Tech Mono', monospace;
-      color: #00ffff;
       font-size: 0.8rem;
+      color: #00FFFF;
       text-shadow:
-        0 0 3px #00ffff,
-        0 0 5px #00ffff;
-      user-select: none;
+        0 0 5px #00ffff,
+        0 0 10px #00ffff;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow:
+          0 0 5px #00ffff,
+          0 0 10px #00ffff,
+          0 0 20px #00ffff;
+      }
+      to {
+        text-shadow:
+          0 0 10px #00ffff,
+          0 0 20px #00ffff,
+          0 0 30px #00ffff,
+          0 0 40px #00ffff;
+      }
     }
 
     /* Responsive */
     @media (max-width: 400px) {
-      .vault-container {
+      #vault-container {
         width: 90vw;
-        padding: 1rem;
+        padding: 15px;
       }
     }
   </style>
 </head>
+
 <body>
-  <div class="vault-container">
+  <div id="vault-container">
+
     <h2>Secure Vault Login</h2>
+
     <form id="login-form">
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Password" required />
+      <input type="email" id="email" placeholder="Email" required /><br />
+      <input type="password" id="password" placeholder="Password" required /><br />
       <button type="submit">Login</button>
     </form>
+
     <form id="vault-form" style="display:none;">
-      <textarea id="vault-content" rows="6" placeholder="Enter your vault content here..."></textarea>
-      <div>
-        <button id="save-vault">Save Vault</button>
-        <button id="logout-btn" style="display:none;">Logout</button>
-      </div>
+      <textarea id="vault-content" placeholder="Enter your vault content here..."></textarea><br />
+      <button id="save-vault">Save Vault</button>
+      <button id="logout-btn" style="display:none;">Logout</button>
     </form>
+
     <p id="message"></p>
+
+    <footer>
+      James Armstrong &amp; Logos
+    </footer>
+
   </div>
-  <footer>James Armstrong & Logos</footer>
 
   <!-- Firebase scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -172,6 +180,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
   <script>
+    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyA0TQaXb8dSIs06Wi39GNs059oxRh-d5Ks",
       authDomain: "jamesvault-ae694.firebaseapp.com",
@@ -181,6 +190,7 @@
       appId: "1:828495768440:web:6c7b4d40db7c03e069368d"
     };
 
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
@@ -192,6 +202,7 @@
     const saveVaultBtn = document.getElementById('save-vault');
     const logoutBtn = document.getElementById('logout-btn');
 
+    // Auth state change monitor
     auth.onAuthStateChanged(user => {
       if (user) {
         messageEl.textContent = "Login successful! You can now access your vault.";
@@ -208,6 +219,7 @@
       }
     });
 
+    // Login handler
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value;
@@ -219,6 +231,7 @@
         });
     });
 
+    // Load vault content
     function loadVaultContent(email) {
       db.collection('vaults').doc(email).get()
         .then((doc) => {
@@ -233,6 +246,7 @@
         });
     }
 
+    // Save vault content
     saveVaultBtn.addEventListener('click', (e) => {
       e.preventDefault();
       const user = auth.currentUser;
@@ -251,6 +265,7 @@
         });
     });
 
+    // Logout handler
     logoutBtn.addEventListener('click', () => {
       auth.signOut()
         .then(() => {
@@ -263,3 +278,4 @@
   </script>
 </body>
 </html>
+
