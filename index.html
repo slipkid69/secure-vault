@@ -4,53 +4,135 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Secure Vault Login</title>
-  
   <style>
+    /* Use a modern system font for crisp text */
     body {
       background-color: #121212;
       color: #e0e0e0;
-      font-family: Arial, sans-serif;
-      margin: 20px;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
     }
-    textarea {
+
+    /* Container to center and constrain width */
+    .container {
+      max-width: 480px;
+      width: 90%;
+      margin: 2rem auto;
+      padding: 1.5rem 2rem;
       background-color: #1e1e1e;
-      color: #e0e0e0;
-      border: 1px solid #333;
-      font-family: monospace;
-      padding: 10px;
-      resize: vertical;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
     }
-    input, button {
-      background-color: #333;
-      color: #e0e0e0;
+
+    h2 {
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      font-size: 1.8rem;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    textarea {
+      background-color: #2c2c2c;
       border: none;
-      padding: 8px 12px;
-      font-size: 1em;
-      margin-right: 10px;
-      cursor: pointer;
-      border-radius: 4px;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      color: #f0f0f0;
+      font-size: 1rem;
+      resize: vertical;
+      box-shadow: inset 0 0 5px #000000cc;
+      transition: box-shadow 0.3s ease;
     }
-    button:hover, input:hover {
-      background-color: #444;
+
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    textarea:focus {
+      outline: none;
+      box-shadow: inset 0 0 10px #3f78ef;
+      background-color: #373737;
+    }
+
+    button {
+      cursor: pointer;
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      background-color: #3f78ef;
+      color: white;
+      margin-top: 0.25rem;
+      margin-bottom: 0.5rem;
+      box-shadow: 0 4px 8px rgb(63 120 239 / 0.4);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #3366d6;
+      box-shadow: 0 6px 16px rgb(51 102 214 / 0.6);
+    }
+
+    button:active {
+      background-color: #2a53b2;
+      box-shadow: 0 3px 8px rgb(42 83 178 / 0.8);
+    }
+
+    #logout-btn {
+      background-color: #d9534f;
+      box-shadow: 0 4px 8px rgba(217, 83, 79, 0.6);
+    }
+
+    #logout-btn:hover {
+      background-color: #c9302c;
+      box-shadow: 0 6px 16px rgba(201, 48, 44, 0.8);
+    }
+
+    #logout-btn:active {
+      background-color: #ac2925;
+      box-shadow: 0 3px 8px rgba(172, 41, 37, 0.9);
+    }
+
+    #message {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: #a8c0ff;
+      min-height: 1.5rem;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h2>Secure Vault Login</h2>
-  
-  <form id="login-form">
-    <input type="email" id="email" placeholder="Email" required /><br /><br />
-    <input type="password" id="password" placeholder="Password" required /><br /><br />
-    <button type="submit">Login</button>
-  </form>
+  <div class="container">
+    <h2>Secure Vault Login</h2>
+    
+    <form id="login-form">
+      <input type="email" id="email" placeholder="Email" required autocomplete="username" />
+      <input type="password" id="password" placeholder="Password" required autocomplete="current-password" />
+      <button type="submit">Login</button>
+    </form>
 
-  <form id="vault-form" style="display:none;">
-    <textarea id="vault-content" rows="10" cols="50" placeholder="Enter your vault content here..."></textarea><br /><br />
-    <button id="save-vault">Save Vault</button>
-    <button id="logout-btn" style="display:none;">Logout</button>
-  </form>
+    <form id="vault-form" style="display:none;">
+      <textarea id="vault-content" rows="10" placeholder="Enter your vault content here..."></textarea>
+      <button id="save-vault">Save Vault</button>
+      <button id="logout-btn" style="display:none;">Logout</button>
+    </form>
 
-  <p id="message"></p>
+    <p id="message"></p>
+  </div>
 
   <!-- Firebase App (the core Firebase SDK) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
