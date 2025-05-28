@@ -17,6 +17,7 @@
   <form id="vault-form" style="display:none;">
     <textarea id="vault-content" rows="10" cols="50" placeholder="Enter your vault content here..."></textarea><br /><br />
     <button id="save-vault">Save Vault</button>
+    <button id="logout-btn" style="display:none;">Logout</button>
   </form>
 
   <p id="message"></p>
@@ -49,22 +50,32 @@
     const messageEl = document.getElementById('message');
     const vaultContent = document.getElementById('vault-content');
     const saveVaultBtn = document.getElementById('save-vault');
+    const logoutBtn = document.getElementById('logout-btn');
 
-    // Handle login form submit
+    // Monitor auth state changes
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        messageEl.textContent = "Login successful! You can now access your vault.";
+        loginForm.style.display = 'none';
+        vaultForm.style.display = 'block';
+        logoutBtn.style.display = 'inline-block';
+        loadVaultContent(user.email);
+      } else {
+        messageEl.textContent = "";
+        loginForm.style.display = 'block';
+        vaultForm.style.display = 'none';
+        logoutBtn.style.display = 'none';
+        vaultContent.value = '';
+      }
+    });
+
+    // Login handler
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
       auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          messageEl.textContent = "Login successful! You can now access your vault.";
-          loginForm.style.display = 'none';
-          vaultForm.style.display = 'block';
-
-          // Load vault content if exists
-          loadVaultContent(email);
-        })
         .catch((error) => {
           messageEl.textContent = "Login failed: " + error.message;
         });
@@ -85,7 +96,7 @@
         });
     }
 
-    // Save vault content to Firestore
+    // Save vault content handler
     saveVaultBtn.addEventListener('click', (e) => {
       e.preventDefault();
       const user = auth.currentUser;
@@ -103,6 +114,18 @@
           messageEl.textContent = "Error saving vault: " + error.message;
         });
     });
+
+    // Logout handler
+    logoutBtn.addEventListener('click', () => {
+      auth.signOut()
+        .then(() => {
+          messageEl.textContent = "Logged out successfully.";
+        })
+        .catch((error) => {
+          messageEl.textContent = "Error logging out: " + error.message;
+        });
+    });
   </script>
 </body>
 </html>
+Update index.html with the combined code
