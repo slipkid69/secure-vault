@@ -37,6 +37,7 @@
     width: 320px;
     animation: pulseGlow 3s infinite alternate ease-in-out;
     z-index: 10;
+    position: relative;
   }
   @keyframes pulseGlow {
     from { box-shadow: 0 0 5px #00ffff, 0 0 15px #00ffff inset; }
@@ -146,6 +147,30 @@
       opacity: 0;
     }
   }
+  /* Sound control buttons container */
+  #sound-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 20;
+    display: flex;
+    gap: 10px;
+  }
+  #sound-controls button {
+    background-color: #00ffff;
+    border: none;
+    color: #000;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 700;
+    box-shadow: 0 0 10px #00ffff;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+  }
+  #sound-controls button:hover {
+    background-color: #33ffff;
+  }
 </style>
 </head>
 <body>
@@ -173,6 +198,12 @@
   James Armstrong & Logos
 </footer>
 
+<!-- Sound Controls -->
+<div id="sound-controls">
+  <button id="play-sound" title="Play Ambient Sound">▶️</button>
+  <button id="pause-sound" title="Pause Ambient Sound" style="display:none;">⏸️</button>
+</div>
+
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -199,6 +230,25 @@
   const saveVaultBtn = document.getElementById('save-vault');
   const logoutBtn = document.getElementById('logout-btn');
   const glyphContainer = document.querySelector('.glyphs');
+
+  // Ambient sound setup
+  const ambientSound = new Audio('ambient.mp3'); // Make sure ambient.mp3 is uploaded in your repo root
+  ambientSound.loop = true;
+
+  const playBtn = document.getElementById('play-sound');
+  const pauseBtn = document.getElementById('pause-sound');
+
+  playBtn.addEventListener('click', () => {
+    ambientSound.play();
+    playBtn.style.display = 'none';
+    pauseBtn.style.display = 'inline-block';
+  });
+
+  pauseBtn.addEventListener('click', () => {
+    ambientSound.pause();
+    pauseBtn.style.display = 'none';
+    playBtn.style.display = 'inline-block';
+  });
 
   // Monitor auth state
   auth.onAuthStateChanged(user => {
@@ -294,3 +344,4 @@
 </script>
 </body>
 </html>
+
