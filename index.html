@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Secure Vault Login</title>
+</head>
+<body>
+  <h2>Secure Vault Login</h2>
+  
+  <form id="login-form">
+    <input type="email" id="email" placeholder="Email" required /><br /><br />
+    <input type="password" id="password" placeholder="Password" required /><br /><br />
+    <button type="submit">Login</button>
+  </form>
+
+  <form id="vault-form" style="display:none;">
+    <textarea id="vault-content" rows="10" cols="50" placeholder="Enter your vault content here..."></textarea><br /><br />
+    <button id="save-vault">Save Vault</button>
+  </form>
+
+  <p id="message"></p>
+
+  <!-- Firebase App (the core Firebase SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <!-- Firebase Auth -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <!-- Firebase Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Your Firebase config object
+    const firebaseConfig = {
+      apiKey: "AIzaSyA0TQaXb8dSIs06Wi39GNs059oxRh-d5Ks",
+      authDomain: "jamesvault-ae694.firebaseapp.com",
+      projectId: "jamesvault-ae694",
+      storageBucket: "jamesvault-ae694.appspot.com",
+      messagingSenderId: "828495768440",
+      appId: "1:828495768440:web:6c7b4d40db7c03e069368d"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const loginForm = document.getElementById('login-form');
+    const vaultForm = document.getElementById('vault-form');
+    const messageEl = document.getElementById('message');
+    const vaultContent = document.getElementById('vault-content');
+    const saveVaultBtn = document.getElementById('save-vault');
+
+    // Handle login form submit
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          messageEl.textContent = "Login successful! You can now access your vault.";
+          loginForm.style.display = 'none';
+          vaultForm.style.display = 'block';
+
+          // Load vault content if exists
+          loadVaultContent(email);
+        })
+        .catch((error) => {
+          messageEl.textContent = "Login failed: " + error.message;
+        });
+    });
+
+    // Load vault content from Firestore
+    function loadVaultContent(email) {
+      db.collection('vaults').doc(email).get()
+        .then((doc) => {
+          if (doc.exists) {
+            vaultContent.value = doc.data().content || '';
+          } else {
+            vaultContent.value = '';
+          }
+        })
+        .catch((error) => {
+          messageEl.textContent = "Error loading vault: " + error.message;
+        });
+    }
+
+    // Save vault content to Firestore
+    saveVaultBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const user = auth.currentUser;
+      if (!user) {
+        messageEl.textContent = "You must be logged in to save vault content.";
+        return;
+      }
+      const content = vaultContent.value;
+
+      db.collection('vaults').doc(user.email).set({ content })
+        .then(() => {
+          messageEl.textContent = "Vault saved securely.";
+        })
+        .catch((error) => {
+          messageEl.textContent = "Error saving vault: " + error.message;
+        });
+    });
+  </script>
+</body>
+</html>
