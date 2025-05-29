@@ -4,294 +4,146 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TechnoHaven Portal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
-    body, html {
+    html, body {
       height: 100%;
-      background: black;
-      font-family: 'Orbitron', monospace;
-      overflow: hidden;
-    }
-
-    body {
+      font-family: 'Orbitron', sans-serif;
       background: url('background.jpg') no-repeat center center fixed;
       background-size: cover;
+      overflow: hidden;
+      color: #00ffff;
     }
 
     .overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
+      background-color: rgba(0, 0, 0, 0.65);
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.75);
+      width: 100%;
+      position: absolute;
       z-index: 0;
     }
 
-    .portal-container {
+    .center-box {
       position: relative;
+      z-index: 1;
       height: 100%;
+      width: 100%;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
-      z-index: 1;
     }
 
     h1 {
       font-size: 1.5rem;
-      color: #00ffff;
-      text-shadow: 0 0 10px #00ffff;
-      margin-bottom: 30px;
-      animation: fadeIn 3s ease forwards;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 8px #00ffff, 0 0 16px #00ffff;
+      animation: glowText 2s ease-in-out infinite alternate;
     }
 
-    .enter-button {
+    @keyframes glowText {
+      from { text-shadow: 0 0 8px #00ffff; }
+      to   { text-shadow: 0 0 20px #00ffff; }
+    }
+
+    #enter-btn {
+      padding: 12px 28px;
       background: #00ffff;
-      color: black;
       border: none;
-      padding: 12px 30px;
-      font-size: 1rem;
-      border-radius: 8px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      color: #000;
+      box-shadow: 0 0 10px #00ffff;
       cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    #enter-btn:hover {
+      transform: scale(1.05);
       box-shadow: 0 0 15px #00ffff;
-      animation: fadeIn 5s ease forwards;
     }
 
-    .enter-button:hover {
-      background: #33ffff;
-    }
-
-    #vault-container {
-      display: none;
-      position: relative;
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid #00ffff;
-      border-radius: 12px;
-      padding: 30px 40px;
-      box-shadow: 0 0 40px #00ffff inset, 0 0 20px #00ffff;
+    .footer {
+      position: absolute;
+      bottom: 12px;
+      width: 100%;
       text-align: center;
-      width: 320px;
-      animation: fadeIn 2s ease forwards;
+      font-size: 0.7rem;
+      color: #00ffff;
+      text-shadow: 0 0 6px #00ffff;
       z-index: 2;
     }
 
-    input, textarea {
-      width: 100%;
-      margin-bottom: 12px;
-      padding: 10px;
-      background: transparent;
-      border: 1.5px solid #00ffff;
-      border-radius: 6px;
-      color: #00ffff;
-      font-family: 'Orbitron', monospace;
-    }
-
-    button {
-      background: #00ffff;
-      color: black;
-      border: none;
-      padding: 10px 20px;
-      margin-top: 10px;
-      cursor: pointer;
-      border-radius: 6px;
-    }
-
-    #message {
-      margin-top: 10px;
-      font-size: 0.85rem;
-      color: #00ffff;
-      text-shadow: 0 0 4px #00ffff;
-    }
-
-    footer {
-      position: fixed;
-      bottom: 10px;
-      width: 100%;
-      text-align: center;
-      font-size: 0.8rem;
-      color: #00ffff;
-      text-shadow: 0 0 4px #00ffff;
-      z-index: 2;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Audio control */
-    #audioControl {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 10;
-    }
-
-    /* Glyphs */
     .glyphs {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
-      overflow: hidden;
       z-index: 0;
     }
 
     .glyph {
       position: absolute;
-      font-family: 'Orbitron', monospace;
       color: #00ffff55;
-      font-size: 1.2rem;
+      font-size: 1.4rem;
       user-select: none;
       animation: floatGlyphs linear infinite;
-      text-shadow: 0 0 5px #00ffff99, 0 0 10px #00ffffaa;
+      text-shadow: 0 0 8px #00ffff99;
+      font-family: 'Orbitron', monospace;
     }
 
     @keyframes floatGlyphs {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-      20% { opacity: 1; }
-      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    #audio-ambient,
+    #audio-techno {
+      display: none;
     }
   </style>
 </head>
 <body>
 
-<!-- Background glyphs -->
+<div class="overlay"></div>
+
 <div class="glyphs" aria-hidden="true"></div>
 
-<!-- Portal Overlay -->
-<div class="portal-container" id="portal">
+<div class="center-box" id="portal-screen">
   <h1>Beyond the Neon Veil, the Vault Awaits...</h1>
-  <button class="enter-button" onclick="enterVault()">Enter TechnoHaven</button>
+  <button id="enter-btn">Enter TechnoHaven</button>
 </div>
 
-<!-- Vault Form -->
-<div id="vault-container">
-  <h2>Secure Vault Login</h2>
-  <form id="login-form">
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <button type="submit">Login</button>
-  </form>
+<div class="footer">James Armstrong & Logos</div>
 
-  <form id="vault-form" style="display:none;">
-    <textarea id="vault-content" placeholder="Enter your vault content here..."></textarea>
-    <button id="save-vault">Save Vault</button>
-    <button id="logout-btn" style="display:none;">Logout</button>
-  </form>
-
-  <p id="message"></p>
-</div>
-
-<footer>
-  James Armstrong & Logos
-</footer>
-
-<!-- Audio -->
-<audio id="backgroundAudio" autoplay loop>
-  <source src="ambient-technohaven.mp3" type="audio/mpeg" />
-  Your browser does not support the audio element.
+<audio id="audio-ambient" autoplay loop>
+  <source src="ambient.mp3" type="audio/mp3" />
 </audio>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<audio id="audio-techno" loop>
+  <source src="ambient-technohaven.mp3" type="audio/mp3" />
+</audio>
 
 <script>
-  // Firebase setup
-  const firebaseConfig = {
-    apiKey: "AIzaSyA0TQaXb8dSIs06Wi39GNs059oxRh-d5Ks",
-    authDomain: "jamesvault-ae694.firebaseapp.com",
-    projectId: "jamesvault-ae694",
-    storageBucket: "jamesvault-ae694.appspot.com",
-    messagingSenderId: "828495768440",
-    appId: "1:828495768440:web:6c7b4d40db7c03e069368d"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
-  // DOM elements
-  const loginForm = document.getElementById('login-form');
-  const vaultForm = document.getElementById('vault-form');
-  const messageEl = document.getElementById('message');
-  const vaultContent = document.getElementById('vault-content');
-  const saveVaultBtn = document.getElementById('save-vault');
-  const logoutBtn = document.getElementById('logout-btn');
-
-  // Enter TechnoHaven transition
-  function enterVault() {
-    document.getElementById('portal').style.display = 'none';
-    document.getElementById('vault-container').style.display = 'block';
-  }
-
-  // Auth
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      loginForm.style.display = 'none';
-      vaultForm.style.display = 'block';
-      logoutBtn.style.display = 'inline-block';
-      loadVaultContent(user.email);
-      messageEl.textContent = "Login successful! You can now access your vault.";
-    } else {
-      loginForm.style.display = 'block';
-      vaultForm.style.display = 'none';
-      logoutBtn.style.display = 'none';
-      vaultContent.value = '';
-      messageEl.textContent = "";
-    }
-  });
-
-  loginForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    auth.signInWithEmailAndPassword(email, password)
-      .catch(error => {
-        messageEl.textContent = "Login failed: " + error.message;
-      });
-  });
-
-  function loadVaultContent(email) {
-    db.collection('vaults').doc(email).get()
-      .then(doc => {
-        vaultContent.value = doc.exists ? (doc.data().content || '') : '';
-      })
-      .catch(error => {
-        messageEl.textContent = "Error loading vault: " + error.message;
-      });
-  }
-
-  saveVaultBtn.addEventListener('click', e => {
-    e.preventDefault();
-    const user = auth.currentUser;
-    if (!user) {
-      messageEl.textContent = "You must be logged in to save vault content.";
-      return;
-    }
-    const content = vaultContent.value;
-    db.collection('vaults').doc(user.email).set({ content })
-      .then(() => messageEl.textContent = "Vault saved securely.")
-      .catch(error => messageEl.textContent = "Error saving vault: " + error.message);
-  });
-
-  logoutBtn.addEventListener('click', () => {
-    auth.signOut().then(() => {
-      messageEl.textContent = "Logged out successfully.";
-    }).catch(error => {
-      messageEl.textContent = "Error logging out: " + error.message;
-    });
-  });
-
-  // Glyph logic
-  const glyphChars = ['◢', '◣', '◥', '◤', '◯', '◇', '◆', '◈', '△', '▲', '▴', '▵', '▶', '►', '▷'];
+  const glyphChars = ['◢','◣','◥','◤','◯','◇','◆','◈','△','▲','▴','▶','▷','✶','✦','✧'];
   const glyphContainer = document.querySelector('.glyphs');
   const maxGlyphs = 25;
 
@@ -300,15 +152,29 @@
     glyph.className = 'glyph';
     glyph.textContent = glyphChars[Math.floor(Math.random() * glyphChars.length)];
     glyph.style.left = Math.random() * 100 + 'vw';
-    glyph.style.animationDuration = 15 + Math.random() * 15 + 's';
-    glyph.style.fontSize = 12 + Math.random() * 24 + 'px';
+    glyph.style.animationDuration = 18 + Math.random() * 12 + 's';
+    glyph.style.fontSize = 14 + Math.random() * 20 + 'px';
     glyphContainer.appendChild(glyph);
     setTimeout(() => glyph.remove(), parseFloat(glyph.style.animationDuration) * 1000);
   }
 
   setInterval(() => {
     if (glyphContainer.children.length < maxGlyphs) createGlyph();
-  }, 1000);
+  }, 600);
+
+  const enterBtn = document.getElementById('enter-btn');
+  const portalScreen = document.getElementById('portal-screen');
+  const audioAmbient = document.getElementById('audio-ambient');
+  const audioTechno = document.getElementById('audio-techno');
+
+  enterBtn.addEventListener('click', () => {
+    portalScreen.style.opacity = 0;
+    audioAmbient.pause();
+    audioTechno.play();
+    setTimeout(() => {
+      window.location.href = "vault.html";
+    }, 1000);
+  });
 </script>
 
 </body>
