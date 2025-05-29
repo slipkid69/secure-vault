@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TechnoHaven Vault</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #00ffff;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    #vault-container {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #00ffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00ffff, inset 0 0 10px #00ffff;
+      text-align: center;
+      z-index: 1;
+    }
+    h2 {
+      text-shadow: 0 0 10px #00ffff;
+    }
+    input, textarea {
+      background: transparent;
+      border: 1.5px solid #00ffff;
+      border-radius: 6px;
+      color: #00ffff;
+      padding: 0.6rem;
+      margin: 0.5rem 0;
+      width: 100%;
+    }
+    button {
+      background-color: #00ffff;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      margin: 0.5rem;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 6px;
+      box-shadow: 0 0 10px #00ffff;
+    }
+    button:hover {
+      background-color: #33ffff;
+    }
+    #message {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+    }
+    footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 0.75rem;
+      text-shadow: 0 0 6px #00ffff;
+    }
+    .glyphs {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .glyph {
+      position: absolute;
+      color: #00ffff88;
+      font-size: 1.2rem;
+      animation: floatGlyphs linear infinite;
+      text-shadow: 0 0 5px #00ffff;
+      user-select: none;
+    }
+    @keyframes floatGlyphs {
+      0% { transform: translateY(100vh) rotate(0); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+<div class="glyphs" aria-hidden="true"></div>
+<div id="vault-container">
+  <h2>Secure Vault Login</h2>
+  <form id="login-form">
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button type="submit">Login</button>
+  </form>
+  <form id="vault-form" style="display:none;">
+    <textarea id="vault-content" placeholder="Enter your vault content here..."></textarea><br />
+    <button id="save-vault">Save Vault</button>
+    <button id="logout-btn" style="display:none;">Logout</button>
+  </form>
+  <p id="message"></p>
+</div>
+<footer>James Armstrong & Logos</footer>
+<audio autoplay loop id="bg-music">
+  <source src="ambient-technohaven.mp3" type="audio/mpeg" />
+</audio>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyA0TQaXb8dSIs06Wi39GNs059oxRh-d5Ks",
+    authDomain: "jamesvault-ae694.firebaseapp.com",
+    projectId: "jamesvault-ae694",
+    storageBucket: "jamesvault-ae694.appspot.com",
+    messagingSenderId: "828495768440",
+    appId: "1:828495768440:web:6c7b4d40db7c03e069368d"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const loginForm = document.getElementById('login-form');
+  const vaultForm = document.getElementById('vault-form');
+  const messageEl = document.getElementById('message');
+  const vaultContent = document.getElementById('vault-content');
+  const saveVaultBtn = document.getElementById('save-vault');
+  const logoutBtn = document.getElementById('logout-btn');
+  const glyphContainer = document.querySelector('.glyphs');
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      messageEl.textContent = "Login successful! You can now access your vault.";
+      loginForm.style.display = 'none';
+      vaultForm.style.display = 'block';
+      logoutBtn.style.display = 'inline-block';
+      loadVaultContent(user.email);
+    } else {
+      messageEl.textContent = "";
+      loginForm.style.display = 'block';
+      vaultForm.style.display = 'none';
+      logoutBtn.style.display = 'none';
+      vaultContent.value = '';
+    }
+  });
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    auth.signInWithEmailAndPassword(email, password)
+      .catch(error => {
+        messageEl.textContent = "Login failed: " + error.message;
+      });
+  });
+  function loadVaultContent(email) {
+    db.collection('vaults').doc(email).get()
+      .then(doc => {
+        if (doc.exists) {
+          vaultContent.value = doc.data().content || '';
+        }
+      });
+  }
+  saveVaultBtn.addEventListener('click', e => {
+    e.preventDefault();
+    const user = auth.currentUser;
+    if (!user) return;
+    db.collection('vaults').doc(user.email).set({ content: vaultContent.value })
+      .then(() => {
+        messageEl.textContent = "Vault saved securely.";
+      });
+  });
+  logoutBtn.addEventListener('click', () => {
+    auth.signOut()
+      .then(() => {
+        messageEl.textContent = "Logged out successfully.";
+      });
+  });
+  const glyphChars = ['\u25B3', '\u25B2', '\u25A1', '\u25CB', '\u2605', '\u2736'];
+  function createGlyph() {
+    const glyph = document.createElement('div');
+    glyph.className = 'glyph';
+    glyph.textContent = glyphChars[Math.floor(Math.random() * glyphChars.length)];
+    glyph.style.left = Math.random() * 100 + 'vw';
+    glyph.style.animationDuration = 10 + Math.random() * 10 + 's';
+    glyph.style.fontSize = 12 + Math.random() * 28 + 'px';
+    glyphContainer.appendChild(glyph);
+    setTimeout(() => glyph.remove(), parseFloat(glyph.style.animationDuration) * 1000);
+  }
+  setInterval(() => {
+    if (glyphContainer.children.length < 25) createGlyph();
+  }, 800);
+</script>
+</body>
+</html>
