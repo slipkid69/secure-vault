@@ -2,46 +2,73 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TechnoHaven Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enter TechnoHaven</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-    }
     body {
+      margin: 0;
       font-family: 'Orbitron', sans-serif;
       background: url('background.jpg') no-repeat center center fixed;
       background-size: cover;
-      color: #00ffff;
-      height: 100vh;
       overflow: hidden;
+      color: #00ffff;
     }
-    .centered {
+
+    #sigil {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 220px;
+      height: 220px;
+      transform: translate(-50%, -50%);
+      opacity: 0.4;
+      animation: spin 20s linear infinite, pulse 4s ease-in-out infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes spin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    .center-container {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      text-shadow: 0 0 10px #00ffff;
+      z-index: 2;
     }
+
     h1 {
-      font-size: 1.4rem;
-      margin-bottom: 30px;
+      font-size: 1.3rem;
+      text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
     }
-    .enter-btn {
-      padding: 10px 25px;
+
+    .enter-button {
       background-color: #00ffff;
-      color: #000;
+      color: black;
       border: none;
-      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 1rem;
       font-weight: bold;
+      border-radius: 6px;
       cursor: pointer;
       box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+      transition: transform 0.2s;
     }
-    .enter-btn:hover {
-      background-color: #33ffff;
+
+    .enter-button:hover {
+      transform: scale(1.05);
     }
+
     footer {
       position: absolute;
       bottom: 10px;
@@ -50,77 +77,110 @@
       font-size: 0.8rem;
       color: #00ffff;
       text-shadow: 0 0 6px #00ffff;
+      z-index: 2;
     }
+
+    /* Floating Glyphs */
+    .glyphs {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
     .glyph {
       position: absolute;
-      color: #00ffff88;
-      font-size: 1.5rem;
+      font-family: 'Orbitron', monospace;
+      color: #00ffff55;
+      font-size: 1.2rem;
       user-select: none;
-      animation: float 12s linear infinite;
-      text-shadow: 0 0 10px #00ffff;
+      animation: floatGlyphs linear infinite;
+      text-shadow: 0 0 5px #00ffff99, 0 0 10px #00ffffaa;
     }
-    @keyframes float {
-      0% { transform: translateY(100vh); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(-10vh); opacity: 0; }
+
+    @keyframes floatGlyphs {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
     }
-    #audio-control {
-      position: absolute;
+
+    /* Audio Button */
+    #audio-toggle {
+      position: fixed;
       bottom: 15px;
       right: 15px;
+      z-index: 3;
       background: #00ffff;
-      color: #000;
       border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
       cursor: pointer;
       font-weight: bold;
-      font-size: 0.8rem;
       box-shadow: 0 0 10px #00ffff;
     }
   </style>
 </head>
 <body>
-  <div class="centered">
+
+  <!-- Glowing Sigil -->
+  <img id="sigil" src="sigil.png" alt="Sigil"/>
+
+  <!-- Floating Glyphs -->
+  <div class="glyphs" aria-hidden="true"></div>
+
+  <!-- Portal Text & Button -->
+  <div class="center-container">
     <h1>Beyond the Neon Veil, the Vault Awaits...</h1>
-    <button class="enter-btn" onclick="window.location.href='vault.html'">Enter TechnoHaven</button>
+    <a href="vault.html">
+      <button class="enter-button">Enter TechnoHaven</button>
+    </a>
   </div>
+
+  <!-- Audio -->
+  <audio id="bg-audio" autoplay loop>
+    <source src="ambient.mp3" type="audio/mp3" />
+  </audio>
+  <button id="audio-toggle">🔊</button>
 
   <footer>James Armstrong & Logos</footer>
 
-  <button id="audio-control" onclick="toggleAudio()">🔊 Sound On</button>
-  <audio id="ambientAudio" autoplay loop>
-    <source src="ambient.mp3" type="audio/mp3">
-  </audio>
-
   <script>
-    const glyphChars = ['◢', '◣', '◥', '◤', '◯', '◇', '◆', '◈', '△', '▲', '▴', '▵', '▶', '►', '▷'];
-    for (let i = 0; i < 25; i++) {
-      const g = document.createElement('div');
-      g.className = 'glyph';
-      g.textContent = glyphChars[Math.floor(Math.random() * glyphChars.length)];
-      g.style.left = Math.random() * 100 + 'vw';
-      g.style.animationDuration = 10 + Math.random() * 10 + 's';
-      g.style.fontSize = 10 + Math.random() * 20 + 'px';
-      document.body.appendChild(g);
+    // Glyph Animation
+    const glyphChars = ['◢','◣','◥','◤','◇','◆','◈','△','▲','▶','▷','☼','✦','✧'];
+    const glyphContainer = document.querySelector('.glyphs');
+    const maxGlyphs = 20;
+
+    function createGlyph() {
+      const glyph = document.createElement('div');
+      glyph.className = 'glyph';
+      glyph.textContent = glyphChars[Math.floor(Math.random() * glyphChars.length)];
+      glyph.style.left = Math.random() * 100 + 'vw';
+      glyph.style.animationDuration = 12 + Math.random() * 12 + 's';
+      glyph.style.fontSize = 12 + Math.random() * 20 + 'px';
+      glyphContainer.appendChild(glyph);
+      setTimeout(() => glyph.remove(), parseFloat(glyph.style.animationDuration) * 1000);
     }
 
-    const audio = document.getElementById('ambientAudio');
-    const btn = document.getElementById('audio-control');
-    let isPlaying = true;
-    function toggleAudio() {
-      if (isPlaying) {
-        audio.pause();
-        btn.textContent = '🔇 Sound Off';
-      } else {
-        audio.play();
-        btn.textContent = '🔊 Sound On';
-      }
-      isPlaying = !isPlaying;
-    }
+    setInterval(() => {
+      if (glyphContainer.children.length < maxGlyphs) createGlyph();
+    }, 1000);
+
+    // Audio Toggle
+    const bgAudio = document.getElementById('bg-audio');
+    const toggleBtn = document.getElementById('audio-toggle');
+    let audioMuted = false;
+
+    toggleBtn.addEventListener('click', () => {
+      audioMuted = !audioMuted;
+      bgAudio.muted = audioMuted;
+      toggleBtn.textContent = audioMuted ? '🔇' : '🔊';
+    });
   </script>
 </body>
 </html>
+
 
 
