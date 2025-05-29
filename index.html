@@ -7,176 +7,119 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0; box-sizing: border-box;
     }
-
-    html, body {
-      height: 100%;
+    body {
       font-family: 'Orbitron', sans-serif;
       background: url('background.jpg') no-repeat center center fixed;
       background-size: cover;
-      overflow: hidden;
       color: #00ffff;
+      height: 100vh;
+      overflow: hidden;
     }
-
-    .overlay {
-      background-color: rgba(0, 0, 0, 0.65);
-      height: 100%;
-      width: 100%;
+    .centered {
       position: absolute;
-      z-index: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      text-shadow: 0 0 10px #00ffff;
     }
-
-    .center-box {
-      position: relative;
-      z-index: 1;
-      height: 100%;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
     h1 {
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
-      text-shadow: 0 0 8px #00ffff, 0 0 16px #00ffff;
-      animation: glowText 2s ease-in-out infinite alternate;
+      font-size: 1.4rem;
+      margin-bottom: 30px;
     }
-
-    @keyframes glowText {
-      from { text-shadow: 0 0 8px #00ffff; }
-      to   { text-shadow: 0 0 20px #00ffff; }
-    }
-
-    #enter-btn {
-      padding: 12px 28px;
-      background: #00ffff;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 0.95rem;
+    .enter-btn {
+      padding: 10px 25px;
+      background-color: #00ffff;
       color: #000;
-      box-shadow: 0 0 10px #00ffff;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
     }
-
-    #enter-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px #00ffff;
+    .enter-btn:hover {
+      background-color: #33ffff;
     }
-
-    .footer {
+    footer {
       position: absolute;
-      bottom: 12px;
+      bottom: 10px;
       width: 100%;
       text-align: center;
-      font-size: 0.7rem;
+      font-size: 0.8rem;
       color: #00ffff;
       text-shadow: 0 0 6px #00ffff;
-      z-index: 2;
     }
-
-    .glyphs {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-
     .glyph {
       position: absolute;
-      color: #00ffff55;
-      font-size: 1.4rem;
+      color: #00ffff88;
+      font-size: 1.5rem;
       user-select: none;
-      animation: floatGlyphs linear infinite;
-      text-shadow: 0 0 8px #00ffff99;
-      font-family: 'Orbitron', monospace;
+      animation: float 12s linear infinite;
+      text-shadow: 0 0 10px #00ffff;
     }
-
-    @keyframes floatGlyphs {
-      0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 0;
-      }
-      20% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-10vh) rotate(360deg);
-        opacity: 0;
-      }
+    @keyframes float {
+      0% { transform: translateY(100vh); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-10vh); opacity: 0; }
     }
-
-    #audio-ambient,
-    #audio-techno {
-      display: none;
+    #audio-control {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      background: #00ffff;
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.8rem;
+      box-shadow: 0 0 10px #00ffff;
     }
   </style>
 </head>
 <body>
+  <div class="centered">
+    <h1>Beyond the Neon Veil, the Vault Awaits...</h1>
+    <button class="enter-btn" onclick="window.location.href='vault.html'">Enter TechnoHaven</button>
+  </div>
 
-<div class="overlay"></div>
+  <footer>James Armstrong & Logos</footer>
 
-<div class="glyphs" aria-hidden="true"></div>
+  <button id="audio-control" onclick="toggleAudio()">🔊 Sound On</button>
+  <audio id="ambientAudio" autoplay loop>
+    <source src="ambient.mp3" type="audio/mp3">
+  </audio>
 
-<div class="center-box" id="portal-screen">
-  <h1>Beyond the Neon Veil, the Vault Awaits...</h1>
-  <button id="enter-btn">Enter TechnoHaven</button>
-</div>
+  <script>
+    const glyphChars = ['◢', '◣', '◥', '◤', '◯', '◇', '◆', '◈', '△', '▲', '▴', '▵', '▶', '►', '▷'];
+    for (let i = 0; i < 25; i++) {
+      const g = document.createElement('div');
+      g.className = 'glyph';
+      g.textContent = glyphChars[Math.floor(Math.random() * glyphChars.length)];
+      g.style.left = Math.random() * 100 + 'vw';
+      g.style.animationDuration = 10 + Math.random() * 10 + 's';
+      g.style.fontSize = 10 + Math.random() * 20 + 'px';
+      document.body.appendChild(g);
+    }
 
-<div class="footer">James Armstrong & Logos</div>
-
-<audio id="audio-ambient" autoplay loop>
-  <source src="ambient.mp3" type="audio/mp3" />
-</audio>
-
-<audio id="audio-techno" loop>
-  <source src="ambient-technohaven.mp3" type="audio/mp3" />
-</audio>
-
-<script>
-  const glyphChars = ['◢','◣','◥','◤','◯','◇','◆','◈','△','▲','▴','▶','▷','✶','✦','✧'];
-  const glyphContainer = document.querySelector('.glyphs');
-  const maxGlyphs = 25;
-
-  function createGlyph() {
-    const glyph = document.createElement('div');
-    glyph.className = 'glyph';
-    glyph.textContent = glyphChars[Math.floor(Math.random() * glyphChars.length)];
-    glyph.style.left = Math.random() * 100 + 'vw';
-    glyph.style.animationDuration = 18 + Math.random() * 12 + 's';
-    glyph.style.fontSize = 14 + Math.random() * 20 + 'px';
-    glyphContainer.appendChild(glyph);
-    setTimeout(() => glyph.remove(), parseFloat(glyph.style.animationDuration) * 1000);
-  }
-
-  setInterval(() => {
-    if (glyphContainer.children.length < maxGlyphs) createGlyph();
-  }, 600);
-
-  const enterBtn = document.getElementById('enter-btn');
-  const portalScreen = document.getElementById('portal-screen');
-  const audioAmbient = document.getElementById('audio-ambient');
-  const audioTechno = document.getElementById('audio-techno');
-
-  enterBtn.addEventListener('click', () => {
-    portalScreen.style.opacity = 0;
-    audioAmbient.pause();
-    audioTechno.play();
-    setTimeout(() => {
-      window.location.href = "vault.html";
-    }, 1000);
-  });
-</script>
-
+    const audio = document.getElementById('ambientAudio');
+    const btn = document.getElementById('audio-control');
+    let isPlaying = true;
+    function toggleAudio() {
+      if (isPlaying) {
+        audio.pause();
+        btn.textContent = '🔇 Sound Off';
+      } else {
+        audio.play();
+        btn.textContent = '🔊 Sound On';
+      }
+      isPlaying = !isPlaying;
+    }
+  </script>
 </body>
 </html>
 
