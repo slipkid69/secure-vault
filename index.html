@@ -3,41 +3,151 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Enter TechnoHaven</title>
+  <title>TechnoHaven Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-
-    html, body {
-      height: 100%;
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      background: black;
       font-family: 'Orbitron', monospace;
-      background: url('background.jpg') no-repeat center center fixed;
-      background-size: cover;
       overflow: hidden;
-      color: #00ffff;
     }
 
     body {
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.75);
+      z-index: 0;
+    }
+
+    .portal-container {
+      position: relative;
+      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
+      z-index: 1;
     }
 
+    h1 {
+      font-size: 1.5rem;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+      margin-bottom: 30px;
+      animation: fadeIn 3s ease forwards;
+    }
+
+    .enter-button {
+      background: #00ffff;
+      color: black;
+      border: none;
+      padding: 12px 30px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 15px #00ffff;
+      animation: fadeIn 5s ease forwards;
+    }
+
+    .enter-button:hover {
+      background: #33ffff;
+    }
+
+    #vault-container {
+      display: none;
+      position: relative;
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #00ffff;
+      border-radius: 12px;
+      padding: 30px 40px;
+      box-shadow: 0 0 40px #00ffff inset, 0 0 20px #00ffff;
+      text-align: center;
+      width: 320px;
+      animation: fadeIn 2s ease forwards;
+      z-index: 2;
+    }
+
+    input, textarea {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 10px;
+      background: transparent;
+      border: 1.5px solid #00ffff;
+      border-radius: 6px;
+      color: #00ffff;
+      font-family: 'Orbitron', monospace;
+    }
+
+    button {
+      background: #00ffff;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    #message {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: #00ffff;
+      text-shadow: 0 0 4px #00ffff;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #00ffff;
+      text-shadow: 0 0 4px #00ffff;
+      z-index: 2;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Audio control */
+    #audioControl {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10;
+    }
+
+    /* Glyphs */
     .glyphs {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
       pointer-events: none;
       overflow: hidden;
-      z-index: 1;
+      z-index: 0;
     }
 
     .glyph {
       position: absolute;
       font-family: 'Orbitron', monospace;
       color: #00ffff55;
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       user-select: none;
       animation: floatGlyphs linear infinite;
       text-shadow: 0 0 5px #00ffff99, 0 0 10px #00ffffaa;
@@ -48,109 +158,20 @@
       20% { opacity: 1; }
       100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
     }
-
-    #splash-screen {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 2;
-      transition: opacity 1s ease;
-    }
-
-    #splash-screen img {
-      max-width: 90%;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 0 20px #00ffff88;
-      margin-bottom: 40px;
-    }
-
-    #enter-btn {
-      padding: 15px 40px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      background: #00ffff;
-      color: #000;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 0 10px #00ffff, 0 0 30px #00ffff88;
-      transition: background 0.3s ease;
-    }
-
-    #enter-btn:hover {
-      background: #33ffff;
-    }
-
-    #vault-container {
-      display: none;
-      background: rgba(0, 0, 0, 0.85);
-      border: 2px solid #00ffff;
-      border-radius: 12px;
-      padding: 30px 40px;
-      box-shadow: 0 0 10px #00ffff, 0 0 40px #00ffff inset;
-      text-align: center;
-      width: 320px;
-      animation: pulseGlow 3s infinite alternate ease-in-out;
-      z-index: 3;
-    }
-
-    @keyframes pulseGlow {
-      from { box-shadow: 0 0 5px #00ffff, 0 0 15px #00ffff inset; }
-      to { box-shadow: 0 0 20px #00ffff, 0 0 50px #00ffff inset; }
-    }
-
-    input[type="email"], input[type="password"], textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      background: transparent;
-      border: 1.5px solid #00ffff;
-      border-radius: 6px;
-      color: #00ffff;
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.3s ease;
-      font-family: 'Orbitron', monospace;
-    }
-
-    button {
-      background-color: #00ffff;
-      border: none;
-      color: #000;
-      padding: 10px 25px;
-      cursor: pointer;
-      border-radius: 6px;
-      font-weight: 700;
-      box-shadow: 0 0 10px #00ffff;
-    }
-
-    footer {
-      margin-top: 20px;
-      font-size: 0.75rem;
-      text-shadow: 0 0 5px #00ffff;
-      z-index: 3;
-    }
-
-    audio {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      z-index: 3;
-    }
   </style>
 </head>
 <body>
-<div class="glyphs"></div>
-<div id="splash-screen">
-  <img src="background.jpg" alt="TechnoHaven Splash">
-  <button id="enter-btn">Enter TechnoHaven</button>
+
+<!-- Background glyphs -->
+<div class="glyphs" aria-hidden="true"></div>
+
+<!-- Portal Overlay -->
+<div class="portal-container" id="portal">
+  <h1>Beyond the Neon Veil, the Vault Awaits...</h1>
+  <button class="enter-button" onclick="enterVault()">Enter TechnoHaven</button>
 </div>
+
+<!-- Vault Form -->
 <div id="vault-container">
   <h2>Secure Vault Login</h2>
   <form id="login-form">
@@ -158,48 +179,33 @@
     <input type="password" id="password" placeholder="Password" required />
     <button type="submit">Login</button>
   </form>
+
   <form id="vault-form" style="display:none;">
-    <textarea id="vault-content" placeholder="Enter your vault content..."></textarea>
+    <textarea id="vault-content" placeholder="Enter your vault content here..."></textarea>
     <button id="save-vault">Save Vault</button>
-    <button id="logout-btn">Logout</button>
+    <button id="logout-btn" style="display:none;">Logout</button>
   </form>
+
   <p id="message"></p>
 </div>
-<footer>James Armstrong & Logos</footer>
-<audio autoplay loop controls>
-  <source src="Haunting_Ethereal_Vocal_Synth.mp3" type="audio/mp3">
+
+<footer>
+  James Armstrong & Logos
+</footer>
+
+<!-- Audio -->
+<audio id="backgroundAudio" autoplay loop>
+  <source src="ambient-technohaven.mp3" type="audio/mpeg" />
+  Your browser does not support the audio element.
 </audio>
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
 <script>
-  const glyphContainer = document.querySelector('.glyphs');
-  const glyphChars = ['◢', '◣', '◥', '◤', '◯', '◇', '◆', '◈', '△', '▲', '▴', '▵', '▶', '►', '▷'];
-  const maxGlyphs = 25;
-
-  function createGlyph() {
-    const glyph = document.createElement('div');
-    glyph.className = 'glyph';
-    glyph.textContent = glyphChars[Math.floor(Math.random() * glyphChars.length)];
-    glyph.style.left = Math.random() * 100 + 'vw';
-    glyph.style.animationDuration = 15 + Math.random() * 10 + 's';
-    glyph.style.fontSize = 12 + Math.random() * 24 + 'px';
-    glyphContainer.appendChild(glyph);
-    setTimeout(() => glyph.remove(), parseFloat(glyph.style.animationDuration) * 1000);
-  }
-
-  setInterval(() => {
-    if (glyphContainer.children.length < maxGlyphs) createGlyph();
-  }, 800);
-
-  document.getElementById('enter-btn').addEventListener('click', () => {
-    document.getElementById('splash-screen').style.opacity = 0;
-    setTimeout(() => {
-      document.getElementById('splash-screen').style.display = 'none';
-      document.getElementById('vault-container').style.display = 'block';
-    }, 1000);
-  });
-
+  // Firebase setup
   const firebaseConfig = {
     apiKey: "AIzaSyA0TQaXb8dSIs06Wi39GNs059oxRh-d5Ks",
     authDomain: "jamesvault-ae694.firebaseapp.com",
@@ -212,50 +218,100 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
+  // DOM elements
   const loginForm = document.getElementById('login-form');
   const vaultForm = document.getElementById('vault-form');
+  const messageEl = document.getElementById('message');
   const vaultContent = document.getElementById('vault-content');
   const saveVaultBtn = document.getElementById('save-vault');
   const logoutBtn = document.getElementById('logout-btn');
-  const messageEl = document.getElementById('message');
 
+  // Enter TechnoHaven transition
+  function enterVault() {
+    document.getElementById('portal').style.display = 'none';
+    document.getElementById('vault-container').style.display = 'block';
+  }
+
+  // Auth
   auth.onAuthStateChanged(user => {
     if (user) {
       loginForm.style.display = 'none';
       vaultForm.style.display = 'block';
       logoutBtn.style.display = 'inline-block';
-      db.collection('vaults').doc(user.email).get()
-        .then(doc => {
-          if (doc.exists) vaultContent.value = doc.data().content || '';
-        });
+      loadVaultContent(user.email);
+      messageEl.textContent = "Login successful! You can now access your vault.";
     } else {
       loginForm.style.display = 'block';
       vaultForm.style.display = 'none';
+      logoutBtn.style.display = 'none';
       vaultContent.value = '';
+      messageEl.textContent = "";
     }
   });
 
   loginForm.addEventListener('submit', e => {
     e.preventDefault();
-    auth.signInWithEmailAndPassword(
-      document.getElementById('email').value,
-      document.getElementById('password').value
-    ).catch(err => messageEl.textContent = 'Login failed: ' + err.message);
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    auth.signInWithEmailAndPassword(email, password)
+      .catch(error => {
+        messageEl.textContent = "Login failed: " + error.message;
+      });
   });
+
+  function loadVaultContent(email) {
+    db.collection('vaults').doc(email).get()
+      .then(doc => {
+        vaultContent.value = doc.exists ? (doc.data().content || '') : '';
+      })
+      .catch(error => {
+        messageEl.textContent = "Error loading vault: " + error.message;
+      });
+  }
 
   saveVaultBtn.addEventListener('click', e => {
     e.preventDefault();
     const user = auth.currentUser;
-    if (!user) return;
-    db.collection('vaults').doc(user.email).set({ content: vaultContent.value })
-      .then(() => messageEl.textContent = 'Vault saved securely.')
-      .catch(err => messageEl.textContent = 'Save error: ' + err.message);
+    if (!user) {
+      messageEl.textContent = "You must be logged in to save vault content.";
+      return;
+    }
+    const content = vaultContent.value;
+    db.collection('vaults').doc(user.email).set({ content })
+      .then(() => messageEl.textContent = "Vault saved securely.")
+      .catch(error => messageEl.textContent = "Error saving vault: " + error.message);
   });
 
   logoutBtn.addEventListener('click', () => {
-    auth.signOut().then(() => messageEl.textContent = 'Logged out successfully.');
+    auth.signOut().then(() => {
+      messageEl.textContent = "Logged out successfully.";
+    }).catch(error => {
+      messageEl.textContent = "Error logging out: " + error.message;
+    });
   });
+
+  // Glyph logic
+  const glyphChars = ['◢', '◣', '◥', '◤', '◯', '◇', '◆', '◈', '△', '▲', '▴', '▵', '▶', '►', '▷'];
+  const glyphContainer = document.querySelector('.glyphs');
+  const maxGlyphs = 25;
+
+  function createGlyph() {
+    const glyph = document.createElement('div');
+    glyph.className = 'glyph';
+    glyph.textContent = glyphChars[Math.floor(Math.random() * glyphChars.length)];
+    glyph.style.left = Math.random() * 100 + 'vw';
+    glyph.style.animationDuration = 15 + Math.random() * 15 + 's';
+    glyph.style.fontSize = 12 + Math.random() * 24 + 'px';
+    glyphContainer.appendChild(glyph);
+    setTimeout(() => glyph.remove(), parseFloat(glyph.style.animationDuration) * 1000);
+  }
+
+  setInterval(() => {
+    if (glyphContainer.children.length < maxGlyphs) createGlyph();
+  }, 1000);
 </script>
+
 </body>
 </html>
+
 
